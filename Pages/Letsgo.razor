@@ -1,0 +1,78 @@
+@page "/let" 
+@using System.Text.RegularExpressions 
+@using BlazorApp12.Database
+@using BlazorApp12.Model
+ 
+<h3></h3> 
+<form>    
+    <input @bind="name" placeholder="Введите имя" class="form-control" style="margin-bottom: 10px; width: 300px"/> 
+    <input @bind="last_name" placeholder="Введите фамилию" class="form-control" style="margin-bottom: 10px; width: 300px"/>    
+    <input @bind="otchestvo" placeholder="Введите отчество" class="form-control" style="margin-bottom: 10px; width: 300px"/>  
+    <input @bind="data" placeholder="Введите группу" class="form-control" style="margin-bottom: 10px; width: 300px"/>
+    <input @bind="pol" placeholder="Введите группу" class="form-control" style="margin-bottom: 10px; width: 300px"/>
+    <input @bind="phone" placeholder="Введите группу" class="form-control" style="margin-bottom: 10px; width: 300px"/>
+    <input @bind="email" placeholder="Введите группу" class="form-control" style="margin-bottom: 10px; width: 300px"/>
+    <button @onclick="Add" class="btn-warning btn-outline-link" style="margin-bottom: 10px; width: 300px" type="button">Добавить сотрудника</button> 
+</form> 
+<table class="table"> 
+    <thead>    
+    <tr> 
+        <th>Имя</th>        
+        <th>Фамилия</th> 
+        <th>Отчество</th>        
+        <th>Дата рождения</th> 
+        <th>Пол</th>
+        <th>Номер телефон</th>
+        <th>Email</th>
+    </tr>    
+    </thead> 
+    <tbody> 
+    @foreach (var i in Students)   
+    { 
+        <tr>            
+            <td>@i.Name</td> 
+            <td>@i.Family</td>           
+            <td>@i.MiddleName</td> 
+            <td>@i.Data</td>      
+            <td>@i.Pol</td> 
+            <td>@i.Phone</td> 
+            <td>@i.Email</td> 
+        </tr> 
+    }   
+    </tbody> 
+</table> 
+
+@inject ProjectContext ef;
+
+@code { 
+    public IList<Student> Students = new List<Student>();    
+    protected override void OnInitialized() 
+    {       
+        Students = ef.Students.ToList(); 
+    }     
+    public string name;   
+    public string last_name; 
+    public string data;   
+    public string otchestvo; 
+    public string pol;
+    public string phone;
+    public string email;
+ 
+    public void Add()    
+    { 
+        Student student = new Student()
+        {
+            Name = name, Family = last_name, MiddleName = otchestvo, Data = data, Pol = pol, Phone = phone, Email = email,
+        }; 
+        name = ""; 
+        last_name = "";        
+        otchestvo = ""; 
+        data = "";
+        pol = "";
+        phone = "";
+        email = "";
+        ef.Add(student); 
+        ef.SaveChanges();
+        
+    } 
+}
