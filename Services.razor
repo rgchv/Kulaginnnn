@@ -1,0 +1,54 @@
+@using BlazorApp12.Model
+@using Microsoft.EntityFrameworkCore
+@using BlazorApp12.Database
+
+@page "/services"
+
+<h3>Услуги</h3>
+
+@foreach (var service in services)
+{
+    <div>
+        <h5>@service.Name</h5>
+        <p>@service.Description</p>
+        <p>Стоимость: @service.Price</p>
+        <!-- Добавьте другие свойства услуги -->
+    </div>
+}
+
+<h4>Добавить новую услугу</h4>
+<form @onsubmit="AddService">
+    <div>
+        <label for="serviceName">Наименование:</label>
+        <input id="serviceName" @bind="newService.Name" required />
+    </div>
+    <div>
+        <label for="serviceDescription">Описание:</label>
+        <textarea id="serviceDescription" @bind="newService.Description" required></textarea>
+    </div>
+    <div>
+        <label for="servicePrice">Стоимость:</label>
+        <input type="number" id="servicePrice" @bind="newService.Price" required />
+    </div>
+    <button type="submit">Добавить</button>
+</form>
+
+@inject ProjectContext ef;
+
+@code {
+    List<Service> services;
+    Service newService = new Service();
+
+    protected override void OnInitialized()
+    {
+        services = ProjectContext.Services.ToList();
+    }
+
+    private void AddService()
+    {
+        ProjectContext.Services.Add(newService);
+        DbContext.SaveChanges();
+        services = ProjectContext.Services.ToList();
+        newService = new Service(); // Очистка формы после добавления
+    }
+}
